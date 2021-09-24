@@ -115,7 +115,6 @@ func recursiveMergeRun(
 			appendLineln(newDockerfile, addAmpersandAndBackslash(currentLine))
 		} else {
 			appendLineln(newDockerfile, currentLine)
-			insideRun = false
 		}
 
 		logDebug.Print("---- tmpDockerfile  ---- \n" + string(*tmpDockerfile))
@@ -125,7 +124,6 @@ func recursiveMergeRun(
 		for tmpScanner.Scan() {
 			tmpLine := tmpScanner.Bytes()
 			appendLineln(newDockerfile, deleteRun(tmpLine))
-			tmpLine = tmpScanner.Bytes()
 		}
 		clearTmpDockerfile(tmpDockerfile)
 		logDebug.Print("---- newDockerfile -----\n" + string(*newDockerfile))

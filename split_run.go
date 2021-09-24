@@ -167,7 +167,6 @@ func recursiveSplitRun(
 		for tmpScanner.Scan() {
 			tmpLine := tmpScanner.Bytes()
 			appendLineln(newDockerfile, tmpLine)
-			tmpLine = tmpScanner.Bytes()
 		}
 		clearTmpDockerfile(tmpDockerfile)
 		logDebug.Print("---- newDockerfile -----\n" + string(*newDockerfile))
