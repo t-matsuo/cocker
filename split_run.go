@@ -42,12 +42,12 @@ func recursiveSplitRun(
 	isComment := haveComment(currentLine)
 	isStartWithoutRun := haveWithoutRun(currentLine)
 
-	log_debug.Printf("------------------------ %d -------------------------\n", depth)
-	defer log_debug.Printf("------------------------ defer %d -------------------\n", depth)
-	log_debug.Println(
+	logDebug.Printf("------------------------ %d -------------------------\n", depth)
+	defer logDebug.Printf("------------------------ defer %d -------------------\n", depth)
+	logDebug.Println(
 		"currentLine: ", string(currentLine),
 	)
-	log_debug.Println(
+	logDebug.Println(
 		"isStartWithRun:", isStartWithRun,
 		",isEndWithAmpBackslash:", isEndWithAmpBackslash,
 		",isEndWithBackslashOnly:", isEndWithBackslashOnly,
@@ -57,7 +57,7 @@ func recursiveSplitRun(
 	)
 
 	if !insideRun && (isEmptyLine || isStartWithoutRun || (!isStartWithRun && isEndWithBackslashOnly) || isComment) {
-		log_debug.Println("SPLIT OP : not inside RUN")
+		logDebug.Println("SPLIT OP : not inside RUN")
 		clearTmpDockerfile(tmpDockerfile)
 		appendLineln(newDockerfile, currentLine)
 		recursiveSplitRun(
@@ -73,11 +73,11 @@ func recursiveSplitRun(
 
 	if insideRun {
 		if isStartWithoutRun {
-			log_debug.Println("SPLIT OP : end of RUN")
+			logDebug.Println("SPLIT OP : end of RUN")
 			appendLineln(tmpDockerfile, currentLine)
 			return
 		}
-		log_debug.Println("SPLIT OP : insdie RUN")
+		logDebug.Println("SPLIT OP : insdie RUN")
 		if isComment {
 			recursiveSplitRun(
 				scanner,
@@ -115,7 +115,7 @@ func recursiveSplitRun(
 			return
 		}
 		if !isStartWithRun && isEndWithBackslashOnly {
-			log_debug.Println("have BackSlash Only")
+			logDebug.Println("have BackSlash Only")
 			insertLineln(tmpDockerfile, currentLine)
 			return
 		}
@@ -128,10 +128,10 @@ func recursiveSplitRun(
 	}
 
 	if needRUN == true {
-		log_err.Fatal("BUG: needRUN = true")
+		logErr.Fatal("BUG: needRUN = true")
 	}
 	if isStartWithRun {
-		log_debug.Println("SPLIT OP : beginning of RUN")
+		logDebug.Println("SPLIT OP : beginning of RUN")
 		insideRun = true
 		if isEndWithBackslashOnly {
 			recursiveSplitRun(
@@ -160,7 +160,7 @@ func recursiveSplitRun(
 			insertLineln(tmpDockerfile, addRun(deleteAmpersandAndBackslash(currentLine)))
 		}
 
-		log_debug.Print("---- tmpDockerfile  ---- \n" + string(*tmpDockerfile))
+		logDebug.Print("---- tmpDockerfile  ---- \n" + string(*tmpDockerfile))
 		// read tmpDockerfile and add into newDockerfile
 		tmpBuf := bytes.NewBuffer(*tmpDockerfile)
 		tmpScanner := bufio.NewScanner(tmpBuf)
@@ -170,7 +170,7 @@ func recursiveSplitRun(
 			tmpLine = tmpScanner.Bytes()
 		}
 		clearTmpDockerfile(tmpDockerfile)
-		log_debug.Print("---- newDockerfile -----\n" + string(*newDockerfile))
+		logDebug.Print("---- newDockerfile -----\n" + string(*newDockerfile))
 
 		insideRun = false
 		recursiveSplitRun(
@@ -184,7 +184,7 @@ func recursiveSplitRun(
 		return
 	}
 
-	log_debug.Println("SPLIT OP : call default recursive")
+	logDebug.Println("SPLIT OP : call default recursive")
 	appendLineln(newDockerfile, currentLine)
 	recursiveSplitRun(
 		scanner,
@@ -198,8 +198,8 @@ func recursiveSplitRun(
 }
 
 func splitRun() {
-	log_debug.Println("Splitting Run")
-	buf := bytes.NewBuffer(Dockerfile)
+	logDebug.Println("Splitting Run")
+	buf := bytes.NewBuffer(dockerfile)
 	scanner := bufio.NewScanner(buf)
 	newDockerfile := make([]byte, 0, 100000)
 	var tmpDockerfile []byte

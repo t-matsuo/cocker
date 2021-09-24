@@ -42,12 +42,12 @@ func recursiveMergeRun(
 	isComment := haveComment(currentLine)
 	isStartWithoutRun := haveWithoutRun(currentLine)
 
-	log_debug.Printf("------------------------ %d -------------------------\n", depth)
-	defer log_debug.Printf("------------------------ defer %d -------------------\n", depth)
-	log_debug.Println(
+	logDebug.Printf("------------------------ %d -------------------------\n", depth)
+	defer logDebug.Printf("------------------------ defer %d -------------------\n", depth)
+	logDebug.Println(
 		"currentLine: ", string(currentLine),
 	)
-	log_debug.Println(
+	logDebug.Println(
 		"isStartWithRun:", isStartWithRun,
 		",isEndWithAmpBackslash:", isEndWithAmpBackslash,
 		",isEndWithBackslashOnly:", isEndWithBackslashOnly,
@@ -57,7 +57,7 @@ func recursiveMergeRun(
 	)
 
 	if !insideRun && (isEmptyLine || isStartWithoutRun || (!isStartWithRun && isEndWithBackslashOnly) || isComment) {
-		log_debug.Println("MERGE OP: not inside RUN")
+		logDebug.Println("MERGE OP: not inside RUN")
 		clearTmpDockerfile(tmpDockerfile)
 		appendLineln(newDockerfile, currentLine)
 		recursiveMergeRun(
@@ -72,11 +72,11 @@ func recursiveMergeRun(
 
 	if insideRun {
 		if isStartWithoutRun {
-			log_debug.Println("MERGE OP : end of RUN")
+			logDebug.Println("MERGE OP : end of RUN")
 			appendLineln(tmpDockerfile, currentLine)
 			return false
 		}
-		log_debug.Println("MERGE OP : insdie RUN")
+		logDebug.Println("MERGE OP : insdie RUN")
 		needAmpBackSlash := recursiveMergeRun(
 			scanner,
 			newDockerfile,
@@ -100,7 +100,7 @@ func recursiveMergeRun(
 	}
 
 	if isStartWithRun {
-		log_debug.Println("MERGE OP : beginning of RUN")
+		logDebug.Println("MERGE OP : beginning of RUN")
 		insideRun = true
 		needAmpBack := recursiveMergeRun(
 			scanner,
@@ -109,7 +109,7 @@ func recursiveMergeRun(
 			insideRun,
 			depth+1,
 		)
-		log_debug.Println("need ampasand and backslash :", needAmpBack)
+		logDebug.Println("need ampasand and backslash :", needAmpBack)
 
 		if needAmpBack {
 			appendLineln(newDockerfile, addAmpersandAndBackslash(currentLine))
@@ -118,7 +118,7 @@ func recursiveMergeRun(
 			insideRun = false
 		}
 
-		log_debug.Print("---- tmpDockerfile  ---- \n" + string(*tmpDockerfile))
+		logDebug.Print("---- tmpDockerfile  ---- \n" + string(*tmpDockerfile))
 		// read tmpDockerfile and add into newDockerfile
 		tmpBuf := bytes.NewBuffer(*tmpDockerfile)
 		tmpScanner := bufio.NewScanner(tmpBuf)
@@ -128,7 +128,7 @@ func recursiveMergeRun(
 			tmpLine = tmpScanner.Bytes()
 		}
 		clearTmpDockerfile(tmpDockerfile)
-		log_debug.Print("---- newDockerfile -----\n" + string(*newDockerfile))
+		logDebug.Print("---- newDockerfile -----\n" + string(*newDockerfile))
 
 		insideRun = false
 		recursiveMergeRun(
@@ -141,7 +141,7 @@ func recursiveMergeRun(
 		return false
 	}
 
-	log_debug.Println("MERGE OP : call default recursive")
+	logDebug.Println("MERGE OP : call default recursive")
 	appendLineln(newDockerfile, currentLine)
 	recursiveMergeRun(
 		scanner,
@@ -154,8 +154,8 @@ func recursiveMergeRun(
 }
 
 func mergeRun() {
-	log_debug.Println("Merging Run")
-	buf := bytes.NewBuffer(Dockerfile)
+	logDebug.Println("Merging Run")
+	buf := bytes.NewBuffer(dockerfile)
 	scanner := bufio.NewScanner(buf)
 	newDockerfile := make([]byte, 0, 100000)
 	var tmpDockerfile []byte

@@ -29,7 +29,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-func ReadDockerFile() {
+func readDockerFile() {
 	var filename string
 	var r io.Reader
 
@@ -39,27 +39,27 @@ func ReadDockerFile() {
 	switch filename {
 	case "-":
 		r = os.Stdin
-		DockerfilePath = "."
+		dockerfilePath = "."
 	case "":
 		if terminal.IsTerminal(int(syscall.Stdin)) {
-			log_err.Fatalln("File is not specified")
+			logErr.Fatalln("File is not specified")
 		}
 		r = os.Stdin
-		DockerfilePath = "."
+		dockerfilePath = "."
 	default:
 		f, err := os.Open(filename)
 		defer f.Close()
 		if err != nil {
-			log_err.Fatalf("%s not found\n", filename)
+			logErr.Fatalf("%s not found\n", filename)
 		}
 		r = f
-		DockerfilePath = filepath.Dir(filename)
+		dockerfilePath = filepath.Dir(filename)
 	}
-	Dockerfile, _ = ioutil.ReadAll(r)
+	dockerfile, _ = ioutil.ReadAll(r)
 }
 
-func OutputDockerFile() {
-	fmt.Print(string(Dockerfile))
+func outputDockerFile() {
+	fmt.Print(string(dockerfile))
 }
 
 func haveRun(line []byte) bool {

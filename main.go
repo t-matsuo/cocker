@@ -27,36 +27,36 @@ import (
 )
 
 var goenv struct {
-	Debug      bool   `default:"false"`
-	Log_prefix string `default:"[cocker]"`
+	Debug     bool   `default:"false"`
+	LogPrefix string `default:"[cocker]"`
 }
 
-var log_info *log.Logger
-var log_warn *log.Logger
-var log_err *log.Logger
-var log_debug *log.Logger
+var logInfo *log.Logger
+var logWarn *log.Logger
+var logErr *log.Logger
+var logDebug *log.Logger
 
-var Dockerfile []byte
-var DockerfilePath string
+var dockerfile []byte
+var dockerfilePath string
 
 func handleEnv() {
 	if err := envconfig.Process("CC", &goenv); err != nil {
-		log_err.Fatalf("Failed to process env: %s", err)
+		logErr.Fatalf("Failed to process env: %s", err)
 		os.Exit(1)
 	}
 
 	// setup log outputs
 	if goenv.Debug || flagDebug {
-		log_info.SetFlags(log.LstdFlags | log.Llongfile | log.Lmsgprefix)
-		log_warn.SetFlags(log.LstdFlags | log.Llongfile | log.Lmsgprefix)
-		log_err.SetFlags(log.LstdFlags | log.Llongfile | log.Lmsgprefix)
-		log_debug.SetOutput(os.Stderr)
+		logInfo.SetFlags(log.LstdFlags | log.Llongfile | log.Lmsgprefix)
+		logWarn.SetFlags(log.LstdFlags | log.Llongfile | log.Lmsgprefix)
+		logErr.SetFlags(log.LstdFlags | log.Llongfile | log.Lmsgprefix)
+		logDebug.SetOutput(os.Stderr)
 	}
 
-	log_info.SetPrefix(goenv.Log_prefix + " INFO ")
-	log_warn.SetPrefix(goenv.Log_prefix + " WARN ")
-	log_err.SetPrefix(goenv.Log_prefix + " ERROR ")
-	log_debug.SetPrefix(goenv.Log_prefix + " DEBUG ")
+	logInfo.SetPrefix(goenv.LogPrefix + " INFO ")
+	logWarn.SetPrefix(goenv.LogPrefix + " WARN ")
+	logErr.SetPrefix(goenv.LogPrefix + " ERROR ")
+	logDebug.SetPrefix(goenv.LogPrefix + " DEBUG ")
 
 }
 
@@ -81,10 +81,10 @@ func showHelp() {
 }
 
 func init() {
-	log_info = log.New(os.Stdout, "[cocker] INFO ", log.LstdFlags|log.Lmsgprefix)
-	log_err = log.New(os.Stderr, "[cocker] ERROR ", log.LstdFlags|log.Lmsgprefix)
-	log_warn = log.New(os.Stderr, "[cocker] WARN ", log.LstdFlags|log.Lmsgprefix)
-	log_debug = log.New(ioutil.Discard, "[cocker] DEBUG ", log.LstdFlags|log.Llongfile|log.Lmsgprefix)
+	logInfo = log.New(os.Stdout, "[cocker] INFO ", log.LstdFlags|log.Lmsgprefix)
+	logErr = log.New(os.Stderr, "[cocker] ERROR ", log.LstdFlags|log.Lmsgprefix)
+	logWarn = log.New(os.Stderr, "[cocker] WARN ", log.LstdFlags|log.Lmsgprefix)
+	logDebug = log.New(ioutil.Discard, "[cocker] DEBUG ", log.LstdFlags|log.Llongfile|log.Lmsgprefix)
 }
 
 var (
@@ -118,7 +118,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	ReadDockerFile()
+	readDockerFile()
 	if flagInclude {
 		includeDockerfile()
 	}

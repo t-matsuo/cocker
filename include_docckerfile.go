@@ -31,7 +31,7 @@ func readFile(filename string) []byte {
 	f, err := os.Open(filename)
 	defer f.Close()
 	if err != nil {
-		log_err.Fatalf("%s not found\n", filename)
+		logErr.Fatalf("%s not found\n", filename)
 		return nil
 	}
 	r = f
@@ -47,13 +47,12 @@ func haveIncludeCommnet(line []byte) bool {
 func getIncludeFilename(line []byte) string {
 	regGetIncludeFilnename := regexp.MustCompile(`^#include *`)
 	filename := string(regGetIncludeFilnename.ReplaceAll(line, []byte(``)))
-	log_debug.Println("DockerfilePath=", DockerfilePath)
-	log_debug.Println("filename=", filename)
+	logDebug.Println("dockerfilePath=", dockerfilePath)
+	logDebug.Println("filename=", filename)
 	if filepath.IsAbs(filename) {
 		return filename
-	} else {
-		return DockerfilePath + "/" + filename
 	}
+	return dockerfilePath + "/" + filename
 }
 
 func includeDockerfileRecursiveFile(filename string, depth int) []byte {
@@ -62,34 +61,34 @@ func includeDockerfileRecursiveFile(filename string, depth int) []byte {
 }
 
 func includeDockerfileRecursive(file []byte, depth int) []byte {
-	log_debug.Printf("--------------------- %d --------------------\n", depth)
-	defer log_debug.Printf("--------------------- defer %d ----------------\n", depth)
+	logDebug.Printf("--------------------- %d --------------------\n", depth)
+	defer logDebug.Printf("--------------------- defer %d ----------------\n", depth)
 	newDockerfile := make([]byte, 0, 100000)
 
 	buf := bytes.NewBuffer(file)
 	scanner := bufio.NewScanner(buf)
 	for scanner.Scan() {
 		line := scanner.Bytes()
-		log_debug.Println(("line: " + string(line)))
+		logDebug.Println(("line: " + string(line)))
 		if haveIncludeCommnet(line) {
 			subFile := includeDockerfileRecursiveFile(getIncludeFilename(line), depth+1)
-			log_debug.Println("adding file" + string(line))
+			logDebug.Println("adding file" + string(line))
 			appendLine(&newDockerfile, subFile)
-			log_debug.Print("newDockerfile\n" + string(*&newDockerfile))
+			logDebug.Print("newDockerfile\n" + string(*&newDockerfile))
 			continue
 		}
-		log_debug.Println("adding", string(line))
+		logDebug.Println("adding", string(line))
 		appendLineln(&newDockerfile, line)
-		log_debug.Print("newDockerfile\n" + string(*&newDockerfile))
+		logDebug.Print("newDockerfile\n" + string(*&newDockerfile))
 	}
 	return newDockerfile
 }
 
 func includeDockerfile() {
-	log_debug.Println("Including Dockerfile")
-	newDockerfile := includeDockerfileRecursive(Dockerfile, 1)
-	Dockerfile = newDockerfile
+	logDebug.Println("Including Dockerfile")
+	newDockerfile := includeDockerfileRecursive(dockerfile, 1)
+	dockerfile = newDockerfile
 	if !flagMerge && !flagSplit {
-		OutputDockerFile()
+		outputDockerFile()
 	}
 }
