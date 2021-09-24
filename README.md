@@ -2,6 +2,8 @@
 
 Cocker is pre processer for Dockerfile.
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/t-matsuo/cocker)](https://goreportcard.com/report/github.com/t-matsuo/cocker)
+
 It provides these features.
 
 * merge RUN command 
