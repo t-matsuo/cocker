@@ -1,0 +1,11 @@
+FROM centos:7
+# Dockerfile.include1
+RUN echo inc1-1
+RUN echo inc1-2
+RUN echo orgDockerfile
+# Dockerfile.include2
+RUN echo inc2-1
+# Dockerfile.include2-1
+RUN echo inc2-1-1
+RUN echo inc2-1-2
+RUN echo inc2-2

@@ -1,0 +1,64 @@
+FROM centos:7
+
+# normal
+RUN echo 123
+RUN echo 456
+RUN echo 789
+RUN echo abc
+RUN echo def
+RUN echo ghi
+RUN echo jkl
+RUN echo mno
+USER guest
+
+# comment
+#RUN echo abc && \
+#    echo def
+#RUN echo ghi && \
+#      echo jkl && \
+
+# empty line after RUN
+RUN echo 123
+RUN echo 456
+RUN echo 789
+RUN echo abc
+RUN echo def
+RUN echo ghi
+
+USER guest
+
+# space after &&
+RUN echo 123
+RUN echo 456
+RUN echo abc
+RUN echo def
+USER guest
+
+# space before &&
+RUN echo 123
+RUN echo 456
+RUN echo abc
+RUN echo def
+USER guest
+
+# space before && and after &&
+RUN echo 123
+RUN echo 456
+RUN echo abc
+RUN echo def
+USER guest
+
+# RUN with \ only
+RUN echo 123 \
+    456
+RUN echo 456
+USER guest
+
+# comment between RUN #1
+RUN echo foo1
+# handling ...
+RUN echo bar2
+    # handling ...
+RUN echo bar3
+USER guest
+

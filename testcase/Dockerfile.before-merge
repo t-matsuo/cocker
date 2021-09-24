@@ -1,0 +1,93 @@
+FROM centos:7
+
+# single
+RUN echo single
+LABEL aaa=123
+
+# normal
+RUN echo 123
+RUN echo 456
+RUN echo 789
+RUN echo abc && \
+    echo def
+RUN echo ghi && \
+      echo jkl && \
+         echo mno
+USER guest
+
+# comment
+#RUN echo abc && \
+#    echo def
+#RUN echo ghi && \
+#      echo jkl && \
+
+# empty line after RUN
+RUN echo 123
+RUN echo 456
+RUN echo 789
+RUN echo abc && \
+    echo def && \
+    echo ghi
+
+USER guest
+
+# empty line between RUN
+RUN echo 123
+RUN echo 456
+
+RUN echo abc && \
+    echo def
+
+USER guest
+
+# space after &&
+RUN echo 123
+RUN echo 456
+RUN echo abc &&   \
+    echo def
+USER guest
+
+# space before &&
+RUN echo 123
+RUN echo 456
+RUN echo abc    && \
+    echo def
+USER guest
+
+# space before && and after &&
+RUN echo 123
+RUN echo 456
+RUN echo abc    &&   \
+    echo def
+USER guest
+
+# RUN with \ only
+RUN echo 123 \
+    456
+RUN echo 456
+
+# LABEL with \
+LABEL aaa=123 \
+      bbb=456 \
+      ccc=789
+RUN echo 456
+USER guest
+
+# comment between RUN #1
+RUN echo foo1
+# handling ...
+RUN echo bar2
+    # handling ...
+RUN echo bar3
+USER guest
+
+# comment between RUN #2
+RUN echo bar1 && \
+# handling ...
+    echo bar2 && \
+    # handling ...
+    echo bar3 && \
+RUN echo bar3
+
+USER guest
+

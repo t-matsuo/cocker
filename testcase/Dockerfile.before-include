@@ -1,0 +1,6 @@
+FROM centos:7
+# Dockerfile.include1
+#include Dockerfile.include1
+RUN echo orgDockerfile
+# Dockerfile.include2
+#include Dockerfile.include2

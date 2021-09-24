@@ -1,0 +1,4 @@
+RUN echo inc2-1
+# Dockerfile.include2-1
+#include Dockerfile.include2-1
+RUN echo inc2-2

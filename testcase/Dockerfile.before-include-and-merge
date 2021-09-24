@@ -1,0 +1,5 @@
+FROM centos:7
+
+RUN echo aaa
+# Dockerfile.include1
+RUN echo bbb
