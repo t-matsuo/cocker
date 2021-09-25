@@ -26,6 +26,11 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
+var (
+	version string = "0.0.0"
+	commit  string = ""
+)
+
 var goenv struct {
 	Debug     bool   `default:"false"`
 	LogPrefix string `default:"[cocker]"`
@@ -93,6 +98,7 @@ var (
 	flagInclude bool
 	flagDebug   bool
 	flagHelp    bool
+	flagVersion bool
 )
 
 func setupFlags() {
@@ -106,12 +112,20 @@ func setupFlags() {
 	flag.BoolVar(&flagInclude, "include", false, "Include Dockerfile using '#include filename' comment (=-i)")
 	flag.BoolVar(&flagDebug, "debug", false, "Print debug messages (=-d)")
 	flag.BoolVar(&flagHelp, "h", false, "Show help")
+	flag.BoolVar(&flagVersion, "version", false, "Show version")
 	flag.Parse()
 }
 
 func main() {
 	setupFlags()
 	handleEnv()
+
+	if flagVersion {
+		fmt.Println("Cocker " + version)
+		fmt.Println("Commit " + commit)
+		fmt.Println("Source https://github.com/t-matsuo/cocker")
+		os.Exit(0)
+	}
 
 	if flagHelp || (!flagMerge && !flagSplit && !flagInclude) || (flagMerge && flagSplit) {
 		showHelp()
