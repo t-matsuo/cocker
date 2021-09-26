@@ -113,6 +113,7 @@ func setupFlags() {
 	flag.BoolVar(&flagInclude, "include", false, "Include Dockerfile using '#include filename' comment (=-i)")
 	flag.BoolVar(&flagDebug, "debug", false, "Print debug messages (=-d)")
 	flag.BoolVar(&flagHelp, "h", false, "Show help")
+	flag.BoolVar(&flagHelp, "help", false, "Show help (=-h)")
 	flag.BoolVar(&flagVersion, "version", false, "Show version")
 	flag.Parse()
 }
