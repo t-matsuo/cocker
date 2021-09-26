@@ -83,11 +83,12 @@ Usage:
   $ cat Dockerfile | cocker [options...]
 
 Options:
-   -m --merge : Merge RUN mode (cannot use -s option)
-   -s --split : Split RUN mode (cannot use -m options
+   -m --merge   : Merge RUN mode (cannot use -s option)
+   -s --split   : Split RUN mode (cannot use -m options
    -i --include : Include another Dockerfile
-   -d --debug : Print debug messages
-   -h --help  : Show help
+   -d --debug   : Print debug messages
+   --version    : Show version number
+   -h --help    : Show help
 
 Environment Variables:
    CC_DEBUG=true : Print debug messages (=--debug option)
