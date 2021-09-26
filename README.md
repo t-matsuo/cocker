@@ -84,7 +84,7 @@ Usage:
 
 Options:
    -m --merge   : Merge RUN mode (cannot use -s option)
-   -s --split   : Split RUN mode (cannot use -m options
+   -s --split   : Split RUN mode (cannot use -m option)
    -i --include : Include another Dockerfile
    -d --debug   : Print debug messages
    --version    : Show version number
