@@ -52,7 +52,7 @@ func recursiveSplitRun(
 		",isEndWithAmpBackslash:", isEndWithAmpBackslash,
 		",isEndWithBackslashOnly:", isEndWithBackslashOnly,
 		",isEmptyLine:", isEmptyLine,
-		",isCommnet:", isComment,
+		",isComment:", isComment,
 		",insideRun:", insideRun,
 	)
 
