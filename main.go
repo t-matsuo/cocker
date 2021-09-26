@@ -75,7 +75,7 @@ func showHelp() {
 	fmt.Println("")
 	fmt.Println("Options:")
 	fmt.Println("   -m --merge   : Merge RUN mode (cannot use -s option)")
-	fmt.Println("   -s --split   : Split RUN mode (cannot use -m options")
+	fmt.Println("   -s --split   : Split RUN mode (cannot use -m option)")
 	fmt.Println("   -i --include : Include another Dockerfile")
 	fmt.Println("   -d --debug   : Print debug messages")
 	fmt.Println("   --version    : Show version number")
