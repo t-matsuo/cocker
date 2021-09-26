@@ -34,7 +34,8 @@ func recursiveMergeRun(
 		return false
 	}
 
-	currentLine := scanner.Bytes()
+	currentLine := make([]byte, len(scanner.Bytes()))
+	copy(currentLine, scanner.Bytes())
 	isStartWithRun := haveRun(currentLine)
 	isEndWithAmpBackslash := haveAmpersandAndBackslash(currentLine)
 	isEndWithBackslashOnly := haveBackslashOnly(currentLine)
