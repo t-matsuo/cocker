@@ -4,3 +4,5 @@ FROM centos:7
 RUN echo orgDockerfile
 # Dockerfile.include2
 #include Dockerfile.include2
+# Dockerfile.include3
+#include subdir/Dockerfile.include3

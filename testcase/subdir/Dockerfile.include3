@@ -1,0 +1,3 @@
+RUN echo inc3
+# Dockerfile.include3-1
+#include Dockerfile.include3-1

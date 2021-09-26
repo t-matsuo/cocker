@@ -27,6 +27,7 @@ import (
 )
 
 func readFile(filename string) []byte {
+	logDebug.Println("reading: " + string(filename))
 	var r io.Reader
 	f, err := os.Open(filename)
 	defer f.Close()
@@ -44,25 +45,33 @@ func haveIncludeCommnet(line []byte) bool {
 	return isInclude
 }
 
-func getIncludeFilename(line []byte) string {
+func getIncludeFilename(line []byte, currentPath string) (string, string) {
 	regGetIncludeFilnename := regexp.MustCompile(`^#include *`)
-	filename := string(regGetIncludeFilnename.ReplaceAll(line, []byte(``)))
-	logDebug.Println("dockerfilePath=", dockerfilePath)
-	logDebug.Println("filename=", filename)
-	if filepath.IsAbs(filename) {
-		return filename
+	filenameWithPath := string(regGetIncludeFilnename.ReplaceAll(line, []byte(``)))
+	var path, filename string
+	if filepath.IsAbs(filenameWithPath) {
+		path = filepath.Dir(filenameWithPath)
+		filename := filenameWithPath
+		return filename, path
 	}
-	return dockerfilePath + "/" + filename
+	if filepath.Dir(filenameWithPath) == "." {
+		path = currentPath
+	} else {
+		path = currentPath + "/" + filepath.Dir(filenameWithPath)
+	}
+	filename = filepath.Base(filenameWithPath)
+	return path + "/" + filename, path
 }
 
-func includeDockerfileRecursiveFile(filename string, depth int) []byte {
+func includeDockerfileRecursiveFile(filename string, currentPath string, depth int) []byte {
 	file := readFile(filename)
-	return includeDockerfileRecursive(file, depth)
+	return includeDockerfileRecursive(file, currentPath, depth)
 }
 
-func includeDockerfileRecursive(file []byte, depth int) []byte {
+func includeDockerfileRecursive(file []byte, currentPath string, depth int) []byte {
 	logDebug.Printf("--------------------- %d --------------------\n", depth)
 	defer logDebug.Printf("--------------------- defer %d ----------------\n", depth)
+	logDebug.Println("currentPath:", currentPath)
 	newDockerfile := make([]byte, 0, 100000)
 
 	buf := bytes.NewBuffer(file)
@@ -71,7 +80,8 @@ func includeDockerfileRecursive(file []byte, depth int) []byte {
 		line := scanner.Bytes()
 		logDebug.Println(("line: " + string(line)))
 		if haveIncludeCommnet(line) {
-			subFile := includeDockerfileRecursiveFile(getIncludeFilename(line), depth+1)
+			filename, filepath := getIncludeFilename(line, currentPath)
+			subFile := includeDockerfileRecursiveFile(filename, filepath, depth+1)
 			logDebug.Println("adding file" + string(line))
 			appendLine(&newDockerfile, subFile)
 			logDebug.Print("newDockerfile\n" + string(*&newDockerfile))
@@ -86,7 +96,9 @@ func includeDockerfileRecursive(file []byte, depth int) []byte {
 
 func includeDockerfile() {
 	logDebug.Println("Including Dockerfile")
-	newDockerfile := includeDockerfileRecursive(dockerfile, 1)
+	logDebug.Println("dockerfilePath=", dockerfilePath)
+
+	newDockerfile := includeDockerfileRecursive(dockerfile, dockerfilePath, 1)
 	dockerfile = newDockerfile
 	if !flagMerge && !flagSplit {
 		outputDockerFile()
