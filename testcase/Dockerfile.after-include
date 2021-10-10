@@ -13,3 +13,5 @@ RUN echo inc2-2
 RUN echo inc3
 # Dockerfile.include3-1
 RUN echo inc3-1
+RUN echo inc4
+RUN echo inc7

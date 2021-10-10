@@ -26,6 +26,12 @@ import (
 	"regexp"
 )
 
+const (
+	noDef    = 0
+	ifDef    = 1
+	ifNotDef = 2
+)
+
 func readFile(filename string) []byte {
 	logDebug.Println("reading: " + string(filename))
 	var r io.Reader
@@ -40,14 +46,48 @@ func readFile(filename string) []byte {
 	return file
 }
 
-func haveIncludeComment(line []byte) bool {
+/*
+func haveIfDef(line []byte) bool {
+	isIfDef, _ := regexp.Match(`^#include [^ ]* ifdef `, line)
+	if isIfDef {
+		regGetIncludeFilnename := regexp.MustCompile(`^#include [^ ]* `)
+	}
+}
+*/
+
+func haveIncludeComment(line []byte) (bool, string, int, string) {
+	filenameWithPath := ""
+	def := noDef
+	env := ""
+
 	isInclude, _ := regexp.Match(`^#include `, line)
-	return isInclude
+	if !isInclude {
+		return false, filenameWithPath, noDef, env
+	}
+
+	regSpaceSplit := regexp.MustCompile(`\s* \s*`)
+	regSpaceSplitResult := regSpaceSplit.Split(string(line), -1)
+	if len(regSpaceSplitResult) == 1 ||
+		len(regSpaceSplitResult) == 3 ||
+		len(regSpaceSplitResult) > 4 {
+		return false, filenameWithPath, noDef, env
+	}
+	filenameWithPath = regSpaceSplitResult[1]
+
+	if len(regSpaceSplitResult) == 4 {
+		env = regSpaceSplitResult[3]
+		if regSpaceSplitResult[2] == "ifdef" {
+			def = ifDef
+		}
+		if regSpaceSplitResult[2] == "ifndef" {
+			def = ifNotDef
+		}
+	}
+
+	return true, filenameWithPath, def, env
 }
 
-func getIncludeFilename(line []byte, currentPath string) (string, string) {
-	regGetIncludeFilnename := regexp.MustCompile(`^#include *`)
-	filenameWithPath := string(regGetIncludeFilnename.ReplaceAll(line, []byte(``)))
+func getIncludeFilename(filenameWithPath string, currentPath string) (string, string) {
 	var path, filename string
 	if filepath.IsAbs(filenameWithPath) {
 		path = filepath.Dir(filenameWithPath)
@@ -79,8 +119,23 @@ func includeDockerfileRecursive(file []byte, currentPath string, depth int) []by
 	for scanner.Scan() {
 		line := scanner.Bytes()
 		logDebug.Println(("line: " + string(line)))
-		if haveIncludeComment(line) {
-			filename, filepath := getIncludeFilename(line, currentPath)
+		isInclude, filenameWithPath, def, env := haveIncludeComment(line)
+		if isInclude {
+			if def == ifDef {
+				_, val := os.LookupEnv(env)
+				if val != true {
+					logDebug.Print("newDockerfile\n" + string(*&newDockerfile))
+					continue
+				}
+			}
+			if def == ifNotDef {
+				_, val := os.LookupEnv(env)
+				if val == true {
+					logDebug.Print("newDockerfile\n" + string(*&newDockerfile))
+					continue
+				}
+			}
+			filename, filepath := getIncludeFilename(filenameWithPath, currentPath)
 			subFile := includeDockerfileRecursiveFile(filename, filepath, depth+1)
 			logDebug.Println("adding file" + string(line))
 			appendLine(&newDockerfile, subFile)

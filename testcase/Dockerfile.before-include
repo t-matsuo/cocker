@@ -6,3 +6,7 @@ RUN echo orgDockerfile
 #include Dockerfile.include2
 # Dockerfile.include3
 #include subdir/Dockerfile.include3
+#include subdir/Dockerfile.include4 ifdef TEST_ENV
+#include subdir/Dockerfile.include5 ifndef TEST_ENV
+#include subdir/Dockerfile.include6 ifdef TEST_DUMMY_ENV
+#include subdir/Dockerfile.include7 ifndef TEST_DUMMY_ENV

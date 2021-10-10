@@ -55,6 +55,7 @@ INPUT="testcase/Dockerfile.before-include"
 WANT="testcase/Dockerfile.after-include"
 OUTPUT="testcase/_tmp_Dockerfile.test-include"
 OPTIONS="-i"
+export TEST_ENV=""
 run_testcase
 
 

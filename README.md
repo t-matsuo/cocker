@@ -48,27 +48,44 @@ RUN echo 3
 
 Include (use -i option) 
 
-Note : It includes files recursively, but it cannot detect loop. 
+Note : It includes files recursively, but it cannot detect loop. You can use "ifdef" or "ifndef" option to switch condition.
 
 ```
 $ cat Dockerfile
 FROM centos:7
 RUN echo 1
 RUN echo 2
-#include Dockerfile.inc
+#include Dockerfile.inc1
+#include Dockerfile.inc2 ifdef MY_ENV1
+#include Dockerfile.inc3 ifdef MY_ENV2
+#include Dockerfile.inc4 ifndef MY_ENV1
 ```
 ```
 $ cat Dockerfile.inc 
 RUN echo a
 RUN echo b
+$ cat Dockerfile.inc2
+RUN echo c
+RUN echo d
+$ cat Dockerfile.inc3
+RUN echo e
+RUN echo f
+$ cat Dockerfile.inc4
+RUN echo g
+RUN echo h
 ```
 ```
+$ export MY_ENV2=""
 $ cocker -i Dockerfile
 FROM centos:7
 RUN echo 1
 RUN echo 2
 RUN echo a
 RUN echo b
+RUN echo e
+RUN echo f
+RUN echo g
+RUN echo h
 ```
 
 ## Help
