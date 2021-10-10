@@ -40,7 +40,7 @@ func readFile(filename string) []byte {
 	return file
 }
 
-func haveIncludeCommnet(line []byte) bool {
+func haveIncludeComment(line []byte) bool {
 	isInclude, _ := regexp.Match(`^#include `, line)
 	return isInclude
 }
@@ -79,7 +79,7 @@ func includeDockerfileRecursive(file []byte, currentPath string, depth int) []by
 	for scanner.Scan() {
 		line := scanner.Bytes()
 		logDebug.Println(("line: " + string(line)))
-		if haveIncludeCommnet(line) {
+		if haveIncludeComment(line) {
 			filename, filepath := getIncludeFilename(line, currentPath)
 			subFile := includeDockerfileRecursiveFile(filename, filepath, depth+1)
 			logDebug.Println("adding file" + string(line))
