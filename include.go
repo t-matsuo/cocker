@@ -46,15 +46,6 @@ func readFile(filename string) []byte {
 	return file
 }
 
-/*
-func haveIfDef(line []byte) bool {
-	isIfDef, _ := regexp.Match(`^#include [^ ]* ifdef `, line)
-	if isIfDef {
-		regGetIncludeFilnename := regexp.MustCompile(`^#include [^ ]* `)
-	}
-}
-*/
-
 func haveIncludeComment(line []byte) (bool, string, int, string) {
 	filenameWithPath := ""
 	def := noDef
