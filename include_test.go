@@ -34,66 +34,58 @@ func Test_haveIncludeComment(t *testing.T) {
 	}{
 		{
 			name:  "normal",
-			args:  args{line: []byte(`#include Dockerfile.inc`)},
+			args:  args{line: []byte("#include Dockerfile")},
 			want:  true,
-			want1: "Dockerfile.inc",
+			want1: "Dockerfile",
 			want2: noDef,
 			want3: "",
 		},
 		{
-			name:  "ifdef",
-			args:  args{line: []byte(`#include Dockerfile.inc ifdef TEST_ENV`)},
+			name:  "normal ifdef",
+			args:  args{line: []byte("#include Dockerfile ifdef TEST_ENV")},
 			want:  true,
-			want1: "Dockerfile.inc",
+			want1: "Dockerfile",
 			want2: ifDef,
 			want3: "TEST_ENV",
 		},
 		{
-			name:  "ifndef",
-			args:  args{line: []byte(`#include Dockerfile.inc ifndef TEST_ENV`)},
+			name:  "normal ifndef",
+			args:  args{line: []byte("#include Dockerfile ifndef TEST_ENV")},
 			want:  true,
-			want1: "Dockerfile.inc",
+			want1: "Dockerfile",
 			want2: ifNotDef,
 			want3: "TEST_ENV",
 		},
 		{
-			name:  "ifdef with some space",
-			args:  args{line: []byte(`#include   Dockerfile.inc  ifdef  TEST_ENV`)},
-			want:  true,
-			want1: "Dockerfile.inc",
+			name:  "invalid args(1)",
+			args:  args{line: []byte("#include")},
+			want:  false,
+			want1: "",
+			want2: noDef,
+			want3: "",
+		},
+		{
+			name:  "invalid args(1) with space",
+			args:  args{line: []byte("#include ")},
+			want:  false,
+			want1: "",
+			want2: noDef,
+			want3: "",
+		},
+		{
+			name:  "invalid args(3)",
+			args:  args{line: []byte("#include Dockerfile ifdef")},
+			want:  false,
+			want1: "",
+			want2: noDef,
+			want3: "",
+		},
+		{
+			name:  "invalid args(3) with space",
+			args:  args{line: []byte("#include Dockerfile ifdef ")},
+			want:  false,
+			want1: "Dockerfile",
 			want2: ifDef,
-			want3: "TEST_ENV",
-		},
-		{
-			name:  "ifndef",
-			args:  args{line: []byte(`#include Dockerfile.inc ifndef TEST_ENV`)},
-			want:  true,
-			want1: "Dockerfile.inc",
-			want2: ifNotDef,
-			want3: "TEST_ENV",
-		},
-		{
-			name:  "invalid args1",
-			args:  args{line: []byte(`#include`)},
-			want:  false,
-			want1: "",
-			want2: noDef,
-			want3: "",
-		},
-		{
-			name:  "invalid args3",
-			args:  args{line: []byte(`#include Dockerfile.inc ifdef`)},
-			want:  false,
-			want1: "",
-			want2: noDef,
-			want3: "",
-		},
-		{
-			name:  "invalid args5",
-			args:  args{line: []byte(`#include Dockerfile.inc ifdef TEST_ENV foo`)},
-			want:  false,
-			want1: "",
-			want2: noDef,
 			want3: "",
 		},
 	}
@@ -115,7 +107,6 @@ func Test_haveIncludeComment(t *testing.T) {
 		})
 	}
 }
-
 func Test_getIncludeFilename(t *testing.T) {
 	type args struct {
 		line        string

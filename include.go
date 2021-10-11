@@ -58,6 +58,9 @@ func haveIncludeComment(line []byte) (bool, string, int, string) {
 		return false, filenameWithPath, noDef, env
 	}
 	filenameWithPath = regSpaceSplitResult[1]
+	if filenameWithPath == "" {
+		return false, filenameWithPath, noDef, env
+	}
 
 	if len(regSpaceSplitResult) == 4 {
 		env = regSpaceSplitResult[3]
@@ -67,8 +70,10 @@ func haveIncludeComment(line []byte) (bool, string, int, string) {
 		if regSpaceSplitResult[2] == "ifndef" {
 			def = ifNotDef
 		}
+		if env == "" {
+			return false, filenameWithPath, def, env
+		}
 	}
-
 	return true, filenameWithPath, def, env
 }
 
