@@ -130,6 +130,7 @@ Options:
    -s --split   : Split RUN mode (cannot use -m option)
    -i --include : Include another Dockerfile
    -d --debug   : Print debug messages
+   -c --condition : Handle ifdef/ifndef condition only
    --version    : Show version number
    -h --help    : Show help
 

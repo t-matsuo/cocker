@@ -66,25 +66,118 @@ func handleEnv() {
 }
 
 func showHelp() {
-	fmt.Println("")
-	fmt.Println("Cocker is pre processor for Dockerfile.")
-	fmt.Println("")
-	fmt.Println("Usage:")
-	fmt.Println("  $ cocker [options...] filename")
-	fmt.Println("  $ cat Dockerfile | cocker [options...]")
-	fmt.Println("")
-	fmt.Println("Options:")
-	fmt.Println("   -m --merge   : Merge RUN mode (cannot use -s option)")
-	fmt.Println("   -s --split   : Split RUN mode (cannot use -m option)")
-	fmt.Println("   -i --include : Include another Dockerfile")
-	fmt.Println("   -c --condition : Handle ifdef/ifndef condition only")
-	fmt.Println("   -d --debug   : Print debug messages")
-	fmt.Println("   --version    : Show version number")
-	fmt.Println("   -h --help    : Show help")
-	fmt.Println("")
-	fmt.Println("Environment Variables:")
-	fmt.Println("   CC_DEBUG=true : Print debug messages (=--debug option)")
-	fmt.Println("")
+	var help = `
+Cocker is pre processor for Dockerfile.
+https://github.com/t-matsuo/cocker
+
+Usage:
+  $ cocker [options...] filename
+  $ cat Dockerfile | cocker [options...]
+
+Options:
+   -m --merge   : Merge RUN mode (cannot use -s option)
+   -s --split   : Split RUN mode (cannot use -m option)
+   -i --include : Include another Dockerfile
+   -c --condition : Handle ifdef/ifndef condition only
+   -d --debug   : Print debug messages
+   --version    : Show version number
+   -h --help    : Show help
+
+Environment Variables:
+   CC_DEBUG=true : Print debug messages (=--debug option)
+
+
+Examples:
+  -m (--merge) option:
+
+    $ cat Dockerfile
+    FROM centos:7
+    RUN echo 1
+    RUN echo 2
+    RUN echo 3
+
+    $ cocker -m Dockerfile
+    FROM centos:7
+    RUN echo 1 && \
+        echo 2 && \
+        echo 3
+
+  -s (--split) option:
+
+    $ cat Dockerfile
+    FROM centos:7
+    RUN echo 1 && \
+        echo 2 && \
+        echo 3
+
+    $ cocker -s Dockerfile
+    FROM centos:7
+    RUN echo 1
+    RUN echo 2
+    RUN echo 3
+
+  -i (--include) option:
+
+    $ cat Dockerfile
+    FROM centos:7
+    RUN echo 1
+    RUN echo 2
+    #include Dockerfile.inc1
+    #include Dockerfile.inc2 ifdef MY_ENV1
+    #include Dockerfile.inc3 ifdef MY_ENV2
+    #include Dockerfile.inc4 ifndef MY_ENV1
+
+    $ cat Dockerfile.inc
+    RUN echo a
+    RUN echo b
+
+    $ cat Dockerfile.inc2
+    RUN echo c
+    RUN echo d
+
+    $ cat Dockerfile.inc3
+    RUN echo e
+    RUN echo f
+
+    $ cat Dockerfile.inc4
+    RUN echo g
+    RUN echo h
+    $ export MY_ENV2=""
+    $ cocker -i Dockerfile
+    FROM centos:7
+    RUN echo 1
+    RUN echo 2
+    RUN echo a
+    RUN echo b
+    RUN echo e
+    RUN echo f
+    RUN echo g
+    RUN echo h
+
+  -c (--condition) option:
+
+    $ export MY_ENV=""
+    $ cat Dockerfile
+    FROM centos:7
+    RUN echo 1
+    RUN echo 2
+    #ifndef MY_ENV
+    RUN echo 3
+    RUN echo 4
+    #endif
+    #ifdef MY_ENV
+    RUN echo 5
+    RUN echo 6
+    #endif
+
+    $ cocker -c Dockerfile
+    FROM centos:7
+    RUN echo 1
+    RUN echo 2
+    RUN echo 5
+    RUN echo 6
+`
+	fmt.Println(help)
 }
 
 func init() {
