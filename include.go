@@ -140,7 +140,7 @@ func includeDockerfile() {
 
 	newDockerfile := includeDockerfileRecursive(dockerfile, dockerfilePath, 1)
 	dockerfile = newDockerfile
-	if !flagMerge && !flagSplit {
+	if !flagMerge && !flagSplit && !flagCondition {
 		outputDockerFile()
 	}
 }
