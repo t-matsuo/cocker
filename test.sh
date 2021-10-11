@@ -57,6 +57,7 @@ OUTPUT="testcase/_tmp_Dockerfile.test-include"
 OPTIONS="-i"
 export TEST_ENV=""
 run_testcase
+unset TEST_ENV
 
 
 # test Include and Merge
@@ -66,6 +67,19 @@ WANT="testcase/Dockerfile.after-include-and-merge"
 OUTPUT="testcase/_tmp_Dockerfile.include-and-merge"
 OPTIONS="-i -m"
 run_testcase
+
+
+# test Condition
+TESTNAME="condition"
+INPUT="testcase/Dockerfile.before-condition"
+WANT="testcase/Dockerfile.after-condition"
+OUTPUT="testcase/_tmp_Dockerfile.condition"
+OPTIONS="-c"
+export TEST_ENV=""
+export TEST_ENV_NESTED=""
+run_testcase
+unset TEST_ENV
+unset TEST_ENV_NESTED
 
 
 echo

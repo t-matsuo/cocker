@@ -1,0 +1,16 @@
+FROM centos:7
+RUN echo abc
+RUN echo def
+RUN echo ghi
+RUN echo jkl
+RUN echo mno
+RUN echo pqr
+RUN echo stu
+
+# ---- Nested ----
+
+RUN echo abc
+RUN echo def
+RUN echo ghi
+RUN echo jkl
+RUN echo mno

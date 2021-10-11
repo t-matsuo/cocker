@@ -77,6 +77,7 @@ func showHelp() {
 	fmt.Println("   -m --merge   : Merge RUN mode (cannot use -s option)")
 	fmt.Println("   -s --split   : Split RUN mode (cannot use -m option)")
 	fmt.Println("   -i --include : Include another Dockerfile")
+	fmt.Println("   -c --condition : Handle ifdef/ifndef condition only")
 	fmt.Println("   -d --debug   : Print debug messages")
 	fmt.Println("   --version    : Show version number")
 	fmt.Println("   -h --help    : Show help")
@@ -94,12 +95,13 @@ func init() {
 }
 
 var (
-	flagMerge   bool
-	flagSplit   bool
-	flagInclude bool
-	flagDebug   bool
-	flagHelp    bool
-	flagVersion bool
+	flagMerge     bool
+	flagSplit     bool
+	flagInclude   bool
+	flagCondition bool
+	flagDebug     bool
+	flagHelp      bool
+	flagVersion   bool
 )
 
 func setupFlags() {
@@ -107,10 +109,12 @@ func setupFlags() {
 	flag.BoolVar(&flagMerge, "m", false, "Merge RUN mode")
 	flag.BoolVar(&flagSplit, "s", false, "Split RUN mode")
 	flag.BoolVar(&flagInclude, "i", false, "Include Dockerfile using '#include filename' comment")
+	flag.BoolVar(&flagCondition, "c", false, "Handle ifdef/ifndef condition only")
 	flag.BoolVar(&flagDebug, "d", false, "Print debug messages")
 	flag.BoolVar(&flagMerge, "merge", false, "Merge RUN mode (=-m)")
 	flag.BoolVar(&flagSplit, "split", false, "Split RUN mode (=-s)")
 	flag.BoolVar(&flagInclude, "include", false, "Include Dockerfile using '#include filename' comment (=-i)")
+	flag.BoolVar(&flagCondition, "condition", false, "Handle ifdef/ifndef condition only")
 	flag.BoolVar(&flagDebug, "debug", false, "Print debug messages (=-d)")
 	flag.BoolVar(&flagHelp, "h", false, "Show help")
 	flag.BoolVar(&flagHelp, "help", false, "Show help (=-h)")
@@ -129,7 +133,9 @@ func main() {
 		os.Exit(0)
 	}
 
-	if flagHelp || (!flagMerge && !flagSplit && !flagInclude) || (flagMerge && flagSplit) {
+	if flagHelp ||
+		(!flagMerge && !flagSplit && !flagInclude && !flagCondition) ||
+		(flagMerge && flagSplit) {
 		showHelp()
 		os.Exit(0)
 	}
@@ -137,6 +143,10 @@ func main() {
 	readDockerFile()
 	if flagInclude {
 		includeDockerfile()
+	}
+	handleCondition()
+	if flagCondition {
+		return
 	}
 	if flagMerge {
 		mergeRun()

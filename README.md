@@ -88,6 +88,32 @@ RUN echo g
 RUN echo h
 ```
 
+Condition (use -c option)
+
+```
+$ export MY_ENV=""
+$ cat Dockerfile
+FROM centos:7
+RUN echo 1
+RUN echo 2
+#ifndef MY_ENV
+RUN echo 3
+RUN echo 4
+#endif
+#ifdef MY_ENV
+RUN echo 5
+RUN echo 6
+#endif
+```
+```
+$ cocker -c Dockerfile
+FROM centos:7
+RUN echo 1
+RUN echo 2
+RUN echo 5
+RUN echo 6
+```
+
 ## Help
 
 ```

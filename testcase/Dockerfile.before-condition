@@ -1,0 +1,40 @@
+FROM centos:7
+RUN echo abc
+#ifdef TEST_ENV
+RUN echo def
+RUN echo ghi
+#endif
+RUN echo jkl
+#ifndef TEST_NOENV
+RUN echo mno
+RUN echo pqr
+#endif
+#ifdef TEST_NOENV
+RUN echo zzz
+RUN echo zzz
+#endif
+#ifndef TEST_ENV
+RUN echo zzz
+RUN echo zzz
+#endif
+RUN echo stu
+
+# ---- Nested ----
+
+RUN echo abc
+#ifdef TEST_ENV
+RUN echo def
+RUN echo ghi
+#ifdef TEST_ENV_NESTED
+RUN echo jkl
+RUN echo mno
+#endif
+#ifdef TEST_ENV_NO_NESTED
+RUN echo zzz
+RUN echo zzz
+#endif
+#ifndef TEST_ENV_NESTED
+RUN echo zzz
+RUN echo zzz
+#endif
+#endif
