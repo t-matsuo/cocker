@@ -29,6 +29,12 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
+const (
+	noDef    = 0
+	ifDef    = 1
+	ifNotDef = 2
+)
+
 func readDockerFile() {
 	var filename string
 	var r io.Reader

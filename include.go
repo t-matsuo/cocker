@@ -26,12 +26,6 @@ import (
 	"regexp"
 )
 
-const (
-	noDef    = 0
-	ifDef    = 1
-	ifNotDef = 2
-)
-
 func readFile(filename string) []byte {
 	logDebug.Println("reading: " + string(filename))
 	var r io.Reader
