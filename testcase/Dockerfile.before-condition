@@ -38,3 +38,14 @@ RUN echo zzz
 RUN echo zzz
 #endif
 #endif
+#ifdef TEST_NOENV
+#ifdef TEST_NOENV2
+RUN echo zzz
+#endif
+#endif
+#ifdef TEST_NOENV
+#ifdef TEST_ENV
+RUN echo zzz
+#endif
+#endif
+RUN echo pqr

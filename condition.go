@@ -78,11 +78,6 @@ func handleConditionRecursive(
 			logDebug.Println("CONDITION OP: have #endif")
 			return
 		}
-		if isSkip {
-			logDebug.Println("CONDITION OP: Skipping")
-			handleConditionRecursive(scanner, newDockerfile, currentMode, isSkip, depth+1)
-			return
-		}
 
 		if (currentMode != ifDef && currentMode != ifNotDef) && haveEndConditionComment(currentLine) {
 			logErr.Fatalln("invalid #endif")
@@ -112,6 +107,11 @@ func handleConditionRecursive(
 				}
 				continue
 			}
+		}
+		if isSkip {
+			logDebug.Println("CONDITION OP: Skipping")
+			handleConditionRecursive(scanner, newDockerfile, currentMode, isSkip, depth+1)
+			return
 		}
 		logDebug.Println("CONDITION OP: adding currentLine: " + string(currentLine))
 		appendLineln(newDockerfile, currentLine)
