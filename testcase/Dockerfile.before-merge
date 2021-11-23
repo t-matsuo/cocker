@@ -91,3 +91,10 @@ RUN echo bar3
 
 USER guest
 
+# break test
+RUN echo 123
+RUN echo 456
+#break
+RUN echo 789
+
+USER guest

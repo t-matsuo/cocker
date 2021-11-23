@@ -90,3 +90,9 @@ RUN echo bar1 && \
 
 USER guest
 
+# break test
+RUN echo 123 && \
+    echo 456
+RUN echo 789
+
+USER guest

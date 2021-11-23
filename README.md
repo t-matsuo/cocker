@@ -12,7 +12,8 @@ It provides these features.
 
 ## Usage
 
-Merge (use -m option)
+Merge (use -m option)  
+Keyword `#break` breaks merging RUN
 
 ```
 $ cat Dockerfile
@@ -20,6 +21,8 @@ FROM centos:7
 RUN echo 1
 RUN echo 2
 RUN echo 3
+#break
+RUN echo 4
 ```
 ```
 $ cocker -m Dockerfile
@@ -27,6 +30,7 @@ FROM centos:7
 RUN echo 1 && \
     echo 2 && \
     echo 3
+RUN echo 4
 ```
 
 Split (use -s option)

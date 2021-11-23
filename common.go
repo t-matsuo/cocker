@@ -73,6 +73,11 @@ func haveRun(line []byte) bool {
 	return isStartWithRun
 }
 
+func haveBreak(line []byte) bool {
+	isBreak, _ := regexp.Match(`^#break`, line)
+	return isBreak
+}
+
 func addRun(line []byte) []byte {
 	if !haveRun(line) {
 		regAddRun := regexp.MustCompile(`^ *`)

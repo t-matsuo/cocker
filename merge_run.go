@@ -42,6 +42,7 @@ func recursiveMergeRun(
 	isEmptyLine := haveEmptyLine(currentLine)
 	isComment := haveComment(currentLine)
 	isStartWithoutRun := haveWithoutRun(currentLine)
+	isBreak := haveBreak(currentLine)
 
 	logDebug.Printf("------------------------ %d -------------------------\n", depth)
 	defer logDebug.Printf("------------------------ defer %d -------------------\n", depth)
@@ -75,6 +76,10 @@ func recursiveMergeRun(
 		if isStartWithoutRun {
 			logDebug.Println("MERGE OP : end of RUN")
 			appendLineln(tmpDockerfile, currentLine)
+			return false
+		}
+		if isBreak {
+			logDebug.Println("MERGE OP : break found")
 			return false
 		}
 		logDebug.Println("MERGE OP : insdie RUN")
